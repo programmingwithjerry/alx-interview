@@ -1,59 +1,74 @@
 #!/usr/bin/python3
+"""
+This script reads lines from standard input (stdin) and calculates specific metrics:
+1. The cumulative file size across all lines.
+2. Counts for specific HTTP status codes.
+
+The script prints these metrics every 10 lines processed or when interrupted by a keyboard signal (CTRL+C).
+"""
 import sys
-import signal
 
-# Initialize counters and storage
-total_file_size = 0
-status_counts = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
-line_count = 0
 
-# This Function prints the statistics
-def print_statistics():
-    print(f"File size: {total_file_size}")
-    for code in sorted(status_counts):
-        if status_counts[code] > 0:
-            print(f"{code}: {status_counts[code]}")
+def display_metrics(total_size, status_code_counts):
+    """
+    Displays the metrics calculated so far:
+    - Total file size.
+    - Count of each HTTP status code that has been encountered at least once.
 
-# Function to handle keyboard interruption (CTRL+C)
-def signal_handler(sig, frame):
-    print_statistics()
-    sys.exit(0)
+    Parameters:
+    - total_size (int): The cumulative total of all file sizes processed.
+    - status_code_counts (dict): A dictionary mapping HTTP status codes to their respective counts.
+    """
+    print('File size: {}'.format(total_size))
+    # Display counts for each status code, sorted in ascending order
+    for code, count in sorted(status_code_counts.items()):
+        if count != 0:
+            print('{}: {}'.format(code, count))
 
-# Attach the signal handler for CTRL+C
-signal.signal(signal.SIGINT, signal_handler)
 
-try:
-    for line in sys.stdin:
-        line = line.strip()
-        
-        # Parse the line with basic validation
-        parts = line.split()
-        if len(parts) < 7:
-            continue
-        
-        # Extract relevant parts from the line
-        ip_address = parts[0]
-        date = parts[3] + " " + parts[4]
-        request = parts[5] + " " + parts[6] + " " + parts[7]
-        try:
-            status_code = int(parts[-2])
-            file_size = int(parts[-1])
-        except (ValueError, IndexError):
-            continue  # Skip lines that do not match the expected format
-        
-        # Accumulate the total file size
-        total_file_size += file_size
-        
-        # Update the status code count if it’s one of the specified codes
-        if status_code in status_counts:
-            status_counts[status_code] += 1
+if __name__ == '__main__':
+    # Initialize total file size counter
+    total_size = 0
 
-        # Increment the line count and print statistics every 10 lines
-        line_count += 1
-        if line_count % 10 == 0:
-            print_statistics()
+    # Dictionary to track occurrences of specific HTTP status codes
+    status_code_counts = {
+        '200': 0,
+        '301': 0,
+        '400': 0,
+        '401': 0,
+        '403': 0,
+        '404': 0,
+        '405': 0,
+        '500': 0
+    }
 
-except KeyboardInterrupt:
-    # On keyboard interruption, print statistics and exit
-    print_statistics()
-    sys.exit(0)
+    try:
+        line_count = 0  # Track the number of lines processed
+        for line in sys.stdin:
+            # Split the line into components and ensure it contains at least the expected number of parts
+            args = line.split()
+            if len(args) > 6:
+                # Extract the status code and file size from the end of the line
+                status = args[-2]
+                file_size = args[-1]
+
+                # Update the total file size
+                total_size += int(file_size)
+
+                # Increment the count for the extracted status code if it is in our defined list
+                if status in status_code_counts:
+                    line_count += 1
+                    status_code_counts[status] += 1
+
+                    # Display metrics after every 10 lines processed
+                    if line_count % 10 == 0:
+                        display_metrics(total_size, status_code_counts)
+
+    except KeyboardInterrupt:
+        # Print the final metrics if a keyboard interrupt is detected
+        display_metrics(total_size, status_code_counts)
+        raise
+    else:
+        # Print metrics if we reach the end of input
+        display_metrics(total_size, status_code_counts)
+
