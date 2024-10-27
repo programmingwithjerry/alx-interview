@@ -1,7 +1,30 @@
 0x03. Log Parsing
 =================
 
-AlgorithmPython
+Concepts Needed:
+File I/O in Python:
+
+Understand how to read from sys.stdin line by line.
+https://docs.python.org/3/tutorial/inputoutput.html
+
+Signal Handling in Python:
+Handling keyboard interruption (CTRL + C) using signal handling in Python.
+https://docs.python.org/3/library/signal.html
+
+Regular Expressions:
+
+Using regular expressions to validate the format of each line.
+https://docs.python.org/3/library/re.html
+
+Dictionaries in Python:
+
+Using dictionaries to count occurrences of status codes and accumulate file sizes.
+https://docs.python.org/3/tutorial/datastructures.html#dictionaries
+
+xception Handling:
+
+Handling possible exceptions that may arise during file reading and data processing
+https://docs.python.org/3/tutorial/errors.html
 
 
 Requirements
