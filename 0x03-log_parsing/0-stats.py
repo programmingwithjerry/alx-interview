@@ -1,50 +1,59 @@
 #!/usr/bin/python3
+"""Reads from standard input and computes running metrics.
+
+After every ten lines or upon receiving a keyboard interruption (CTRL + C),
+outputs:
+    - The cumulative file size.
+    - The count of each encountered status code.
 """
-Log Parsing: Reads from standard input, tracking file size and status code counts.
-"""
 
-import sys
+def display_summary(file_size, code_counts):
+    """Prints the computed metrics.
 
-if __name__ == '__main__':
+    Args:
+        file_size (int): The cumulative file size.
+        code_counts (dict): A dictionary with status code counts.
+    """
+    print("File size: {}".format(file_size))
+    for code in sorted(code_counts):
+        print("{}: {}".format(code, code_counts[code]))
 
-    total_file_size, line_counter = 0, 0
-    tracked_codes = ["200", "301", "400", "401", "403", "404", "405", "500"]
-    code_counts = {code: 0 for code in tracked_codes}
+if __name__ == "__main__":
+    import sys
 
-    def display_metrics(code_counts: dict, total_file_size: int) -> None:
-        """Outputs cumulative file size and counts for each tracked status code."""
-        print("File size: {:d}".format(total_file_size))
-        for code, count in sorted(code_counts.items()):
-            if count:
-                print("{}: {}".format(code, count))
+    file_size = 0
+    code_counts = {}
+    valid_status_codes = ['200', '301', '400', '401', '403', '404', '405', '500']
+    line_counter = 0
 
     try:
         for line in sys.stdin:
-            line_counter += 1
-            data_parts = line.split()
-            
-            # Increment count for recognized status codes
+            if line_counter == 10:
+                display_summary(file_size, code_counts)
+                line_counter = 1
+            else:
+                line_counter += 1
+
+            parts = line.split()
+
+            # Accumulate file size if the last element is a valid integer
             try:
-                status_code = data_parts[-2]
-                if status_code in code_counts:
-                    code_counts[status_code] += 1
-            except IndexError:
-                pass
-            
-            # Add to total file size if last element is a valid integer
-            try:
-                total_file_size += int(data_parts[-1])
+                file_size += int(parts[-1])
             except (IndexError, ValueError):
                 pass
-            
-            # Display metrics after every 10 lines
-            if line_counter % 10 == 0:
-                display_metrics(code_counts, total_file_size)
-        
-        # Final output after processing all lines
-        display_metrics(code_counts, total_file_size)
+
+            # Count occurrences of valid status codes
+            try:
+                status_code = parts[-2]
+                if status_code in valid_status_codes:
+                    code_counts[status_code] = code_counts.get(status_code, 0) + 1
+            except IndexError:
+                pass
+
+        # Final summary output after reading all lines
+        display_summary(file_size, code_counts)
 
     except KeyboardInterrupt:
-        # Output metrics on keyboard interruption
-        display_metrics(code_counts, total_file_size)
+        # Output the current metrics if interrupted
+        display_summary(file_size, code_counts)
         raise
