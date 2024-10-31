@@ -11,8 +11,7 @@ def validUTF8(data):
     data (list of int): List of integers where each integer
     represents one byte of data.
 
-    Return: 
-    bool: True if data is a valid UTF-8 encoding, else False.
+    Return: True if data is a valid UTF-8 encoding, else False.
     """
     num_bytes = 0
 
@@ -30,4 +29,4 @@ def validUTF8(data):
             if byte >> 6 != 0b10:
                 return False
             num_bytes -= 1
-    return num_bytes == 0
+    return (num_bytes == 0)
