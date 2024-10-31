@@ -13,7 +13,6 @@ def minOperations(n):
     reach exactly n 'H' characters.
     """
     if n < 2:
-        #If n is 1 or less,we need no operations beyond the initial 'H'
         return 0
 
     operations = 0
@@ -25,4 +24,4 @@ def minOperations(n):
             n //= divisor
         divisor += 1
 
-    return operations
+    return (operations)
