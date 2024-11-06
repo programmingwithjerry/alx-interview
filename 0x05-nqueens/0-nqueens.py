@@ -3,6 +3,7 @@
 
 import sys
 
+
 if __name__ == '__main__':
     # Check for correct number of arguments
     if len(sys.argv) != 2:
