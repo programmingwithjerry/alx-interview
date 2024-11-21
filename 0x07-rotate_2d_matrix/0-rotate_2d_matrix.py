@@ -6,11 +6,9 @@ Module for rotating a 2D matrix in place.
 def rotate_2d_matrix(matrix):
     """
     Performs an in-place rotation of a 2D matrix (m x n dimensions).
-
     Args:
         matrix (list): A list of lists representing the 2D matrix.
-
-    Returns:
+    Return:
         None: Modifies the input matrix directly.
     """
     # Ensure the input is a list
