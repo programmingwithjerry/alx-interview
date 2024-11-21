@@ -1,28 +1,56 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
-Rotate a 2D matrix 90 degrees clockwise in-place.
+Module for rotating a 2D matrix in place.
 """
 
-from typing import List
-
-
-def rotate_2d_matrix(matrix: List[List[int]]) -> None:
+def rotate_2d_matrix(matrix):
     """
-    Rotates an n x n 2D matrix 90 degrees clockwise in-place.
+    Performs an in-place rotation of a 2D matrix (m x n dimensions).
 
     Args:
-        matrix (List[List[int]]): The n x n 2D matrix to be rotated.
+        matrix (list): A list of lists representing the 2D matrix.
 
-    Return:
-        None: The function modifies the matrix in-place.
+    Returns:
+        None: Modifies the input matrix directly.
     """
-    n = len(matrix)
+    # Ensure the input is a list
+    if type(matrix) != list:
+        return
 
-    # Transpose the matrix
-    for i in range(n):
-        for j in range(i + 1, n):
-            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+    # Check that the matrix is non-empty
+    if len(matrix) <= 0:
+        return
 
-    # Reverse each row
-    for i in range(n):
-        matrix[i].reverse()
+    # Validate that all elements in the matrix are lists
+    if not all(map(lambda row: type(row) == list, matrix)):
+        return
+
+    # Get the dimensions of the matrix
+    num_rows = len(matrix)
+    num_cols = len(matrix[0])
+
+    # Confirm that all rows have the same number of columns
+    if not all(map(lambda row: len(row) == num_cols, matrix)):
+        return
+
+    col_index, row_index = 0, num_rows - 1
+    # Iterate through each element in the matrix
+    for i in range(num_cols * num_rows):
+        """Start a new row for the rotated matrix after
+           every original row's elements"""
+        if i % num_rows == 0:
+            matrix.append([])
+
+        # Move to the last row and iterate backwards
+        if row_index == -1:
+            row_index = num_rows - 1
+            col_index += 1
+
+        # Append the transposed and reversed element to the new row
+        matrix[-1].append(matrix[row_index][col_index])
+
+        # Remove the processed row when finished
+        if col_index == num_cols - 1 and row_index >= -1:
+            matrix.pop(row_index)
+
+        row_index -= 1
