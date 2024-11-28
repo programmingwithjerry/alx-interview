@@ -9,7 +9,7 @@ def makeChange(coins, total):
         coins (list): List of coin values available.
         total (int): The desired total amount.
 
-    Returns:
+    Return:
         int: Minimum number of coins required, or -1 if it is not possible.
     """
     if total <= 0:
