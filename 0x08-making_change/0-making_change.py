@@ -1,16 +1,11 @@
 #!/usr/bin/python3
 """Calculate the minimum number of coins needed
-   to reach a specific amount."""
+   to reach a specific amount.
+"""
+
 
 def makeChange(coins, total):
     """Determine the minimum coins required to reach the total amount.
-
-    Args:
-        coins (list): List of coin values available.
-        total (int): The desired total amount.
-
-    Return:
-        int: Minimum number of coins required, or -1 if it is not possible.
     """
     if total <= 0:
         return 0
