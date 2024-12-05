@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """This Defines island perimeter finding function."""
 
+
 def island_perimeter(grid):
     """
     Calculate the perimeter of the island in a 2D grid.
