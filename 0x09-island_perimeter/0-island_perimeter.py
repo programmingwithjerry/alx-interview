@@ -11,8 +11,9 @@ def island_perimeter(grid):
     num_columns = len(grid[0])
     num_rows = len(grid)
 
-    # Variables to track the total land cells and shared sides
-    #between adjacent land cells
+    """Variables to track the total land cells and shared sides
+       between adjacent land cells
+    """
     shared_sides = 0
     land_cells = 0
 
