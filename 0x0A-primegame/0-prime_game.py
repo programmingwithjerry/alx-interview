@@ -1,9 +1,11 @@
 #!/usr/bin/python3
+
 """Prime game module.
-This module implements a function to determine the winner of
-a prime number game
-based on the given number of rounds and a list of integers.
+   This module implements a function to determine the winner of
+   a prime number game
+   based on the given number of rounds and a list of integers.
 """
+
 
 def isWinner(x, nums):
     """Determines the winner of a prime number game.
@@ -43,5 +45,4 @@ def isWinner(x, nums):
     # Decide the overall winner or declare a tie
     if maria == ben:
         return None  # Tie
-    #Winner is the one with more wins
     return 'Maria' if maria > ben else 'Ben'
