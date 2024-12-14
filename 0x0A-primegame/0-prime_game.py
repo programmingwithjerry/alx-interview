@@ -1,57 +1,47 @@
-#!/usr/bin/env python3
-"""
-Determine the winner of a game where players take turns picking primes
-and removing them and their multiples.
+#!/usr/bin/python3
+"""Prime game module.
+This module implements a function to determine the winner of
+a prime number game
+based on the given number of rounds and a list of integers.
 """
 
 def isWinner(x, nums):
+    """Determines the winner of a prime number game.
     """
-    Determine who wins the most rounds.
-    """
-    if not nums or x < 1:
+    # Handle edge cases: no rounds to play or an empty list of numbers
+    if x < 1 or not nums:
         return None
 
-    # Initialize win counters for Maria and Ben
-    maria_wins, ben_wins = 0, 0
+    # Initialize the win counters for Maria and Ben
+    maria, ben = 0, 0
 
-    # Find the maximum value of n to precompute primes
-    max_num = max(nums)
+    # Identify the largest number across all rounds
+    max_n = max(nums)
 
-    # Sieve of Eratosthenes to find all primes up to max_num
-    is_prime = [True] * (max_num + 1)
-    is_prime[0] = is_prime[1] = False  # 0 and 1 are not primes
+    """Create a boolean list to identify primes using
+    """the Sieve of Eratosthenes
+    primes = [True for _ in range(1, max_n + 1, 1)]
+    primes[0] = False  # Mark 1 as non-prime since it's not a prime number
 
-    for num in range(2, int(max_num**0.5) + 1):
-        if is_prime[num]:
-            for multiple in range(num * num, max_num + 1, num):
-                is_prime[multiple] = False
+    # Apply the Sieve of Eratosthenes to determine prime numbers
+    for i, is_prime in enumerate(primes, 1):
+        if i == 1 or not is_prime:
+            continue  # Skip non-prime numbers and the number 1
+        # Mark multiples of the current prime number as non-prime
+        for j in range(i + i, max_n + 1, i):
+            primes[j - 1] = False
 
-    # Precompute the number of primes up to each number
-    primes_up_to = [0] * (max_num + 1)
-    for i in range(1, max_num + 1):
-        primes_up_to[i] = primes_up_to[i - 1] + (1 if is_prime[i] else 0)
+    # Determine the winner for each round
+    for _, n in zip(range(x), nums):
+        # Count how many numbers up to `n` are prime
+        primes_count = len(list(filter(lambda x: x, primes[:n])))
 
-    # Evaluate each game round
-    for n in nums:
-        # Count primes up to n
-        prime_count = primes_up_to[n]
+        # Update win counters based on the parity of the prime count
+        ben += primes_count % 2 == 0  # Ben wins if count is even
+        maria += primes_count % 2 == 1  # Maria wins if count is odd
 
-        # Determine the winner of the round based on the prime count parity
-        if prime_count % 2 == 1:  # Maria wins if the count is odd
-            maria_wins += 1
-        else:  # Ben wins if the count is even
-            ben_wins += 1
-
-    # Determine the overall winner
-    if maria_wins > ben_wins:
-        return "Maria"
-    elif ben_wins > maria_wins:
-        return "Ben"
-    else:
-        return None
-
-# Example usage
-if __name__ == "__main__":
-    x = 3
-    nums = [4, 5, 1]
-    print(isWinner(x, nums))  # Output should be "Ben"
+    # Decide the overall winner or declare a tie
+    if maria == ben:
+        return None  # Tie
+    #Winner is the one with more wins
+    return 'Maria' if maria > ben else 'Ben'
