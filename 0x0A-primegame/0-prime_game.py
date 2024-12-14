@@ -19,7 +19,7 @@ def isWinner(x, nums):
     max_n = max(nums)
 
     """Create a boolean list to identify primes using
-    """the Sieve of Eratosthenes
+    the Sieve of Eratosthenes"""
     primes = [True for _ in range(1, max_n + 1, 1)]
     primes[0] = False  # Mark 1 as non-prime since it's not a prime number
 
